@@ -7,10 +7,13 @@ import {
   ModalBody,
   ModalFooter,
   TabPanel,
+  InputGroup,
+  InputLeftElement,
 } from '@chakra-ui/react';
 import { supabase } from '@dashboard/utils/supabase.utils';
 import { Controller, useForm } from 'react-hook-form';
 import { ISignUp } from './interfaces/login.interface';
+import { AiOutlineLock, AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
 
 const SignUpTab = () => {
   const { control, reset, handleSubmit } = useForm<ISignUp>({
@@ -47,7 +50,12 @@ const SignUpTab = () => {
             render={({ field: { value, onChange }, formState: { errors } }) => (
               <FormControl isInvalid={Boolean(errors?.name?.message)}>
                 <FormLabel>Name</FormLabel>
-                <Input placeholder="Name" value={value} onChange={onChange} />
+                <InputGroup>
+                  <Input placeholder="Name" value={value} onChange={onChange} />
+                  <InputLeftElement>
+                    <AiOutlineUser />
+                  </InputLeftElement>{' '}
+                </InputGroup>
                 <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
               </FormControl>
             )}
@@ -65,11 +73,17 @@ const SignUpTab = () => {
             render={({ field: { value, onChange }, formState: { errors } }) => (
               <FormControl isInvalid={Boolean(errors?.email?.message)} mt={4}>
                 <FormLabel>Email Id</FormLabel>
-                <Input
-                  placeholder="Email Id"
-                  value={value}
-                  onChange={onChange}
-                />
+
+                <InputGroup>
+                  <Input
+                    placeholder="Email Id"
+                    value={value}
+                    onChange={onChange}
+                  />
+                  <InputLeftElement>
+                    <AiOutlineMail />
+                  </InputLeftElement>{' '}
+                </InputGroup>
                 <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
               </FormControl>
             )}
@@ -85,12 +99,18 @@ const SignUpTab = () => {
                 mt={4}
               >
                 <FormLabel>Password</FormLabel>
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  value={value}
-                  onChange={onChange}
-                />
+
+                <InputGroup>
+                  <Input
+                    placeholder="Password"
+                    type="password"
+                    value={value}
+                    onChange={onChange}
+                  />
+                  <InputLeftElement>
+                    <AiOutlineLock />
+                  </InputLeftElement>{' '}
+                </InputGroup>
                 <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
               </FormControl>
             )}
