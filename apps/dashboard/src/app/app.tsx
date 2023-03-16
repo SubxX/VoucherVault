@@ -1,11 +1,41 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './app.module.css';
+import { Routes, Route } from 'react-router-dom';
+import { ChakraBaseProvider } from '@chakra-ui/react';
+import { theme } from '../theme';
 
-export function App() {
+// Layouts
+import DashboardLayout from '../layouts/DashboardLayout';
+import AppLayout from '../layouts/AppLayout';
+
+// Components
+
+// Pages
+import Home from '../pages/home';
+import MyCoupons from '../pages/my-coupons';
+import MyOrders from '../pages/my-orders';
+import Profile from '../pages/profile';
+import DashboardHome from '@dashboard/pages/dashboard-home';
+import useSupabaseAuthStateListener from '@dashboard/hooks/useSupabaseAuthStateListener';
+import useInitUser from '@dashboard/hooks/useInitUser';
+
+function App() {
+  useSupabaseAuthStateListener();
+  useInitUser();
+
   return (
-    <>
-      <div />
-    </>
+    <ChakraBaseProvider theme={theme}>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" index element={<Home />} />
+        </Route>
+
+        <Route path="dashboard" element={<DashboardLayout />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="my-coupons" element={<MyCoupons />} />
+          <Route path="my-orders" element={<MyOrders />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+      </Routes>
+    </ChakraBaseProvider>
   );
 }
 
