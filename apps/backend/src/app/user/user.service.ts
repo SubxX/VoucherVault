@@ -23,7 +23,7 @@ export class UsersService {
   }
 
   async getById(id: string) {
-    return this.baseModel.findOne({ id: id });
+    return this.baseModel.findById(id);
   }
 
   async getUser(
