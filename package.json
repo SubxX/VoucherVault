@@ -6,6 +6,8 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^2.5.1",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/mongoose": "^9.2.1",
@@ -14,6 +16,7 @@
     "@reduxjs/toolkit": "^1.9.3",
     "@supabase/supabase-js": "1.35.4",
     "axios": "^1.0.0",
+    "framer-motion": "^10.4.0",
     "mongoose": "^7.0.2",
     "nestjs-supabase-auth": "1.0.9",
     "passport-jwt": "^4.0.1",
