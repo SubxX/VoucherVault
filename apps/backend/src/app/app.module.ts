@@ -3,11 +3,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './user/user.module';
 
 console.log('mkdsa', process.env.DB_URI);
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.DB_URI)],
+  imports: [
+    MongooseModule.forRoot(process.env.DB_URI),
+    UsersModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
