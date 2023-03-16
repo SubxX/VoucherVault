@@ -9,14 +9,23 @@ import {
   TabPanel,
   InputGroup,
   InputLeftElement,
+  Alert,
+  AlertIcon,
+  CloseButton,
+  Text,
 } from '@chakra-ui/react';
 import { supabase } from '@dashboard/utils/supabase.utils';
 import { Controller, useForm } from 'react-hook-form';
 import { ILogin } from './interfaces/login.interface';
 import { AiOutlineLock, AiOutlineMail } from 'react-icons/ai';
+import { useState } from 'react';
 
 const SignInTab = () => {
-  const { control, reset, handleSubmit } = useForm<ILogin>({
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<any>();
+  const closeErr = () => setError(undefined);
+
+  const { control, handleSubmit } = useForm<ILogin>({
     defaultValues: {
       email: '',
       password: '',
@@ -24,17 +33,32 @@ const SignInTab = () => {
   });
 
   const submit = async ({ email, password }: ILogin) => {
-    console.log({ email, password });
-    const { user, error } = await supabase.auth.signIn({ email, password });
-    if (error) {
-      console.log(error);
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signIn({ email, password });
+      if (error) throw new Error(error?.message);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
     }
-    reset();
   };
+
   return (
     <form onSubmit={handleSubmit(submit)}>
       <TabPanel p={0}>
         <ModalBody py={0} pt={4}>
+          {Boolean(error) && (
+            <Alert status="error" mb={2}>
+              <AlertIcon />
+              <Text flex={1}>{error?.message}</Text>
+              <CloseButton
+                onClick={closeErr}
+                aria-label="Close error message"
+              />
+            </Alert>
+          )}
+
           <Controller
             control={control}
             name="email"
@@ -93,7 +117,7 @@ const SignInTab = () => {
           />
         </ModalBody>
         <ModalFooter justifyContent="center">
-          <Button variant="primary" mr={3} type="submit" w="full">
+          <Button variant="primary" type="submit" w="full" isLoading={loading}>
             Login
           </Button>
         </ModalFooter>

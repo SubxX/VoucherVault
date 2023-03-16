@@ -14,9 +14,11 @@ import { supabase } from '@dashboard/utils/supabase.utils';
 import { Controller, useForm } from 'react-hook-form';
 import { ISignUp } from './interfaces/login.interface';
 import { AiOutlineLock, AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
+import { useState } from 'react';
 
 const SignUpTab = () => {
-  const { control, reset, handleSubmit } = useForm<ISignUp>({
+  const [loading, setLoading] = useState(false);
+  const { control, handleSubmit } = useForm<ISignUp>({
     defaultValues: {
       name: '',
       email: '',
@@ -25,17 +27,22 @@ const SignUpTab = () => {
   });
 
   const submit = async ({ name, email, password }: ISignUp) => {
-    const { user, error } = await supabase.auth.signUp(
-      {
-        email,
-        password,
-      },
-      {
-        data: { name },
-      }
-    );
-    console.log({ name, email, password });
-    reset();
+    try {
+      const { error } = await supabase.auth.signUp(
+        {
+          email,
+          password,
+        },
+        {
+          data: { name },
+        }
+      );
+      if (error) throw new Error(error?.message);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <form onSubmit={handleSubmit(submit)}>
@@ -117,7 +124,13 @@ const SignUpTab = () => {
           />
         </ModalBody>
         <ModalFooter justifyContent="center">
-          <Button variant="primary" mr={3} type="submit" w="full">
+          <Button
+            variant="primary"
+            mr={3}
+            type="submit"
+            w="full"
+            isLoading={loading}
+          >
             Sign Up
           </Button>
         </ModalFooter>

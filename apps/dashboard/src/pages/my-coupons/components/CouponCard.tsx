@@ -8,7 +8,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import VerifiedIcon from '@dashboard/assets/icons/VerifiedIcon';
-import { RxDragHandleDots2 } from 'react-icons/rx';
+import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { IVoucher } from '@dashboard/interfaces/voucher.interface';
 
@@ -27,7 +27,7 @@ const CouponCard = ({ title, description }: IVoucher) => {
             <Menu>
               <MenuButton
                 as={IconButton}
-                icon={<RxDragHandleDots2 />}
+                icon={<BiDotsVerticalRounded />}
                 aria-label="Options"
                 size="xs"
               />

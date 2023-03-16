@@ -6,6 +6,16 @@ const primary = defineStyle({
   _hover: {
     background: 'primary.600',
   },
+  _disabled: {
+    background: 'primary.200',
+    _hover: {
+      background: 'primary.200 !important',
+    }
+  },
+  _loading: {
+    color: 'primary.800'
+  },
+
 
   // let's also provide dark mode alternatives
   //   _dark: {
