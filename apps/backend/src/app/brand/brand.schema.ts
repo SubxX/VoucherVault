@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Coupon } from '../coupon/coupon.schema';
 import { Media } from '../media/media.schema';
 
 export type BrandDocument = Brand & Document;
@@ -10,6 +11,9 @@ export class Brand {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Media' })
   media: Media;
+
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' }])
+  coupons: [Coupon];
 
   @Prop({ type: Date, default: null })
   deletedAt: Date;

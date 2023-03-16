@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './categories/category.module';
+import { CouponModule } from './coupon/coupon.module';
 import { MediaModule } from './media/media.module';
 import { UsersModule } from './user/user.module';
 
@@ -19,6 +20,7 @@ console.log('mkdsa', process.env.DB_URI);
     AuthModule,
     BrandModule,
     CategoryModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [AppService],
