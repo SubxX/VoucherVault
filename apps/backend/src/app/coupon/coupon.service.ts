@@ -11,6 +11,8 @@ import { Category, CategoryDocument } from '../categories/category.schema';
 import { Brand, BrandDocument } from '../brand/brand.schema';
 import moment from 'moment';
 import { User, UserDocument } from '../user/user.schema';
+import { TriggerNotificationBody } from '../notification/notification.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class CouponService {
@@ -22,7 +24,8 @@ export class CouponService {
     @InjectModel(Brand.name) private brandModel: Model<BrandDocument>,
     private readonly mediaService: MediaService,
     private readonly brandService: BrandService,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    private readonly notificationService: NotificationService
   ) {}
 
   async create(createCouponDto: CreateCouponDto) {
@@ -72,6 +75,21 @@ export class CouponService {
       await this.userModel.findByIdAndUpdate(createCouponDto.createdBy, {
         $push: { coupons: createdCoupon },
       });
+
+    const user = await this.userModel.findById(createCouponDto.createdBy);
+    const templatebody: TriggerNotificationBody = {
+      templateName: 'coupon-created',
+      subscriberId: user.email,
+      email: user.email,
+      payload: {
+        couponCode: createdCoupon.code,
+        couponCommission: createdCoupon.bidAmount,
+        couponDescription: createdCoupon.description,
+        currency: createdCoupon.currency,
+      },
+    };
+
+    await this.notificationService.trigger(templatebody);
     return createdCoupon;
   }
 

@@ -31,14 +31,13 @@ export class CategoryController {
   constructor(private baseService: CategoryService) {}
 
   @ApiOkResponse()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  async findAllcategory(@Query() params: GetCategoryReq): Promise<Category[]> {
-    return this.baseService.findAll(params);
+  async findAllcategory(@Query() params: GetCategoryReq) {
+    const cat = await this.baseService.findAll(params);
+    return cat;
   }
 
   @ApiOkResponse()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   async findcategory(@Param('id') id: string): Promise<Category> {
     return this.baseService.findById(id);

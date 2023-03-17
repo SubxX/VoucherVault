@@ -5,13 +5,19 @@ import { SupabaseAuthStrategy } from 'nestjs-supabase-auth';
 import { ExtractJwt } from 'passport-jwt';
 import { supabaseCreds } from '../../common/supabase.config';
 import { CreateUserDto } from '../user/user.dto';
+import { NotificationService } from '../notification/notification.service';
+import { MediaService } from '../media/media.service';
 
 @Injectable()
 export class SupabaseStrategy extends PassportStrategy(
   SupabaseAuthStrategy,
   'supabase'
 ) {
-  public constructor(private userService: UsersService) {
+  public constructor(
+    private userService: UsersService,
+    private mediaService: MediaService,
+    private notificationService: NotificationService
+  ) {
     super({
       supabaseUrl: supabaseCreds.supabaseUrl,
       supabaseKey: supabaseCreds.supabaseKey,
@@ -83,6 +89,19 @@ export class SupabaseStrategy extends PassportStrategy(
 
         const newuser = await this.userService.createUser(reqDto);
         console.log('newuser', newuser);
+
+        // ==== Novu create subscriber ========
+        await this.notificationService.createSubscriber(user);
+
+        if (payload.user_metadata.avatar_url || payload.user_metadata.picture) {
+          const mediaBody = {
+            url,
+            user: newuser,
+          };
+          url =
+            payload.user_metadata.picture || payload.user_metadata.avatar_url;
+          media = await this.mediaService.createMediaWithLink(mediaBody);
+        }
 
         payload._id = newuser.id;
         payload.newlyCreated = true;

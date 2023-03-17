@@ -6,6 +6,7 @@ import { CategoryModule } from '../categories/category.module';
 import { CategorySchema } from '../categories/category.schema';
 import { MediaModule } from '../media/media.module';
 import { MediaSchema } from '../media/media.schema';
+import { NotificationModule } from '../notification/notification.module';
 import { UsersModule } from '../user/user.module';
 import { UserSchema } from '../user/user.schema';
 import { CouponController } from './coupon.controller';
@@ -23,6 +24,7 @@ import { CouponService } from './coupon.service';
     ]),
     UsersModule,
     MediaModule,
+    NotificationModule,
     BrandModule,
     CategoryModule,
   ],

@@ -36,7 +36,8 @@ export class CategoryService {
   }
 
   async findAll(query) {
-    return await this.baseModel.find(query);
+    const cat = await this.baseModel.find(query);
+    return cat;
   }
 
   async findOne(query) {

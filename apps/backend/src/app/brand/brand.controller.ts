@@ -31,14 +31,12 @@ export class BrandController {
   constructor(private baseService: BrandService) {}
 
   @ApiOkResponse()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   async findAllbrand(@Query() params: GetBrandReq): Promise<Brand[]> {
     return this.baseService.findAll(params);
   }
 
   @ApiOkResponse()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   async findbrand(@Param('id') id: string): Promise<Brand> {
     return this.baseService.findById(id);

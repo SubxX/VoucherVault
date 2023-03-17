@@ -46,35 +46,35 @@ export class CreateMediaReq {
 export class CreateMediaWithLinkReq {
   @ApiProperty({ required: false })
   @MinLength(2)
-  name: string;
+  name?: string;
 
   @ApiProperty({ required: false })
-  url: string;
+  url?: string;
 
   @ApiProperty({ required: false })
-  type: string;
+  type?: string;
 
   @ApiProperty({ required: false })
-  mime: string;
+  mime?: string;
 
   @ApiProperty({ required: false })
-  size: number;
+  size?: number;
 
   @ApiProperty({ required: false })
-  public: boolean;
+  public?: boolean;
 
   @ApiProperty({ required: false })
-  altText: string;
+  altText?: string;
 
   @ApiProperty({ required: false })
-  provider: string;
+  provider?: string;
 
   @ApiProperty({ required: false })
-  providerMetadata;
+  providerMetadata?;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  user;
+  user?;
 }
 
 export class UpdateMediaReq {
