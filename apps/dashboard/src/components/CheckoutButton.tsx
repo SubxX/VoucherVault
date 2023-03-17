@@ -1,9 +1,22 @@
 import { Button } from '@chakra-ui/react';
 import { axiosInstance } from '@dashboard/utils/axios.utils';
+import { useAppDispatch, useAppSelector } from '@dashboard/store/store';
+import { setDialog } from '@dashboard/store/features/auth/auth.slice';
+
 const providerKey = import.meta.env.VITE_PAYMENT_PROVIDER_KEY_ID;
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const CheckoutButton = ({ amount }: { amount: number }) => {
+const CheckoutButton = ({
+  couponId,
+  creator,
+}: {
+  couponId: string;
+  creator: string;
+}) => {
+  const diaptch = useAppDispatch();
+  const user: any = useAppSelector((state) => state.auth.user);
+  const shouldDisable = user?._id === creator;
+
   function loadRazorpayScript(src: string) {
     return new Promise((resolve) => {
       const script = document.createElement('script');
@@ -19,6 +32,11 @@ const CheckoutButton = ({ amount }: { amount: number }) => {
   }
 
   const checkoutHandler = async () => {
+    if (!user) {
+      diaptch(setDialog(true));
+      return;
+    }
+
     const res = await loadRazorpayScript(
       'https://checkout.razorpay.com/v1/checkout.js'
     );
@@ -30,7 +48,7 @@ const CheckoutButton = ({ amount }: { amount: number }) => {
     const { data } = await axiosInstance.post(
       `${backendUrl}/payments/create-order`,
       {
-        amount,
+        couponId,
       }
     );
 
@@ -70,7 +88,11 @@ const CheckoutButton = ({ amount }: { amount: number }) => {
   };
 
   return (
-    <Button title="Pay Now" onClick={checkoutHandler}>
+    <Button
+      variant="primary"
+      onClick={checkoutHandler}
+      isDisabled={shouldDisable}
+    >
       Purchase
     </Button>
   );

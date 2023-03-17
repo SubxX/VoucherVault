@@ -87,7 +87,7 @@ const Form = ({ onClose }: any) => {
 
       const selectedCategories = startData?.categories as any;
       const categories = selectedCategories?.map((c: any) => ({
-        value: c.id,
+        value: c._id,
         label: c.name,
       }));
       const type = CouponPaymentType.find(

@@ -1,20 +1,26 @@
 import { Avatar } from '@chakra-ui/avatar';
-import { Button } from '@chakra-ui/button';
 import { Card, CardBody, CardFooter, CardHeader } from '@chakra-ui/card';
 import { Box, Heading, HStack, Text, Stack } from '@chakra-ui/layout';
-import VerifiedIcon from '@dashboard/assets/icons/VerifiedIcon';
-import Rating from '@dashboard/components/Rating';
-import { IVoucher } from '@dashboard/interfaces/coupon.interface';
-import { Link } from 'react-router-dom';
+import { Tag, TagLabel } from '@chakra-ui/react';
+import CheckoutButton from '@dashboard/components/CheckoutButton';
+// import Rating from '@dashboard/components/Rating';
+import { ICoupon } from '@dashboard/interfaces/coupon.interface';
+import dayjs from 'dayjs';
 
 const VoucherCard = ({
   title,
   description,
-  sellerName,
-  price,
-  rating,
+  bidAmount,
+  createdBy,
   _id,
-}: IVoucher) => {
+  brand,
+  categories,
+  validUpto,
+}: ICoupon) => {
+  const createdByName = `${createdBy?.firstName ?? ''} ${
+    createdBy?.lastName ?? ''
+  }`;
+
   return (
     <Card background="customBg" w="full" p={4} variant="outline">
       <CardHeader p={0}>
@@ -22,13 +28,31 @@ const VoucherCard = ({
           <Heading size={'md'} fontWeight={500}>
             {title}
           </Heading>
-          <VerifiedIcon />
+          {/* <VerifiedIcon /> */}
         </HStack>
       </CardHeader>
       <CardBody p={0} pt={2}>
-        <Text fontWeight={400} fontSize="sm">
-          {description}
-        </Text>
+        <Text fontWeight={400}>{description}</Text>
+        <HStack mt={1}>
+          <Text>Brand : </Text>
+          <Text fontWeight="bold">{(brand as any)?.name}</Text>
+        </HStack>
+        <HStack mt={1}>
+          <Text>Categories : </Text>
+          <HStack mt={2}>
+            {(categories as any).map((cat: any) => (
+              <Tag key={`${_id}-${cat?._id}`} colorScheme="purple">
+                <TagLabel>{cat.name}</TagLabel>
+              </Tag>
+            ))}
+          </HStack>
+        </HStack>
+        <HStack mt={1}>
+          <Text>Expires in : </Text>
+          <Text fontWeight="bold">
+            {dayjs(validUpto).diff(new Date(), 'days')} days
+          </Text>
+        </HStack>
       </CardBody>
       <CardFooter p={0} pt={3}>
         <Stack
@@ -38,23 +62,24 @@ const VoucherCard = ({
           flexDir={{ base: 'column', md: 'row' }}
         >
           <HStack gap={2} flex={1}>
-            <Avatar name={sellerName} size="md" />
+            <Avatar name={createdByName} size="md" />
             <Box>
-              <Text mb={1}>{sellerName}</Text>
-              <Rating
+              <Text mb={1}>{createdByName}</Text>
+              {/* <Rating
                 // size={5}
                 icon="star"
                 scale={5}
                 fillColor="gold"
                 strokeColor="grey"
-              />
+              /> */}
             </Box>
           </HStack>
           <HStack gap={4} justifyContent="space-between" m={0}>
-            <Text fontWeight={500} fontSize="2xl">{`Rs. ${price}`}</Text>
-            <Button variant="primary" as={Link} to={`/checkout/${_id}`}>
+            <Text fontWeight={500} fontSize="2xl">{`Rs. ${bidAmount}`}</Text>
+            <CheckoutButton couponId={_id} creator={createdBy?._id} />
+            {/* <Button variant="primary" as={Link} to={`/checkout/${_id}`}>
               Purchase
-            </Button>
+            </Button> */}
           </HStack>
         </Stack>
       </CardFooter>

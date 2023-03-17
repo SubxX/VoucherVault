@@ -14,6 +14,8 @@ import {
   Button,
   AlertDialogContent,
   useDisclosure,
+  Tag,
+  TagLabel,
 } from '@chakra-ui/react';
 import VerifiedIcon from '@dashboard/assets/icons/VerifiedIcon';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
@@ -23,9 +25,11 @@ import { useDeleteCouponMutation } from '@dashboard/store/api/coupon.query';
 import { useRef } from 'react';
 import { useAppDispatch } from '@dashboard/store/store';
 import { openDialog } from '@dashboard/store/features/coupon/coupon-handler.slice';
+import dayjs from 'dayjs';
 
 const CouponCard = (props: ICoupon) => {
-  const { title, description, bidAmount, _id } = props;
+  const { title, description, bidAmount, _id, categories, brand, validUpto } =
+    props;
   const [deleteCoupon, { isLoading }] = useDeleteCouponMutation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<any>();
@@ -46,7 +50,7 @@ const CouponCard = (props: ICoupon) => {
           </Heading>
 
           <HStack>
-            <VerifiedIcon />
+            {/* <VerifiedIcon /> */}
 
             <Menu>
               <MenuButton
@@ -104,6 +108,29 @@ const CouponCard = (props: ICoupon) => {
         <Text fontWeight={400} fontSize="sm">
           {description}
         </Text>
+
+        <HStack mt={1}>
+          <Text>Brand : </Text>
+          <Text fontWeight="bold">{(brand as any)?.name}</Text>
+        </HStack>
+
+        <HStack mt={1}>
+          <Text>Categories : </Text>
+          <HStack mt={2}>
+            {(categories as any).map((cat: any) => (
+              <Tag key={`${_id}-${cat?._id}`} colorScheme="purple">
+                <TagLabel>{cat.name}</TagLabel>
+              </Tag>
+            ))}
+          </HStack>
+        </HStack>
+
+        <HStack mt={1}>
+          <Text>Expires in : </Text>
+          <Text fontWeight="bold">
+            {dayjs(validUpto).diff(new Date(), 'days')} days
+          </Text>
+        </HStack>
 
         <HStack gap={4} justifyContent="space-between" mt={2}>
           <Text fontWeight={500} fontSize="2xl">{`Rs. ${bidAmount}`}</Text>

@@ -9,8 +9,8 @@ export const couponApi = createApi({
   baseQuery: axiosBaseQuery(),
   tagTypes: [TAG],
   endpoints: (builder) => ({
-    getCoupons: builder.query<ICoupon[], void>({
-      query: () => ({ url: `coupon`, method: 'get' }),
+    getCoupons: builder.query<ICoupon[], string>({
+      query: (query) => ({ url: `coupon${query}`, method: 'get' }),
       providesTags: result => [...(result ?? []).map(({ _id }) => ({ type: TAG, id: _id })), { type: TAG, id: 'all' }]
     }),
     getMyCoupons: builder.query<ICoupon[], void>({

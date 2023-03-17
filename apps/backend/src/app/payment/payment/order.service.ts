@@ -15,13 +15,14 @@ export class OrderService {
     private baseModel: Model<PaymentIntentDocument>,
     private couponService: CouponService,
     private accountService: PaymentAccountService
-  ) {}
+  ) { }
 
   async createOrder(body, req) {
     const coupon = await this.couponService.findById(body?.couponId);
+    console.log(coupon, body?.couponId)
     if (!coupon)
       throw new HttpException('Coupon not found', HttpStatus.BAD_REQUEST);
-    const amount = body?.amount * 100;
+    const amount = +coupon?.bidAmount * 100;
     const transferAmount = amount - amount * 0.1;
 
     const paymentAcocunt = await this.accountService.fetchPaymentAccount(

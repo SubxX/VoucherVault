@@ -14,7 +14,7 @@ const MyCoupons = () => {
       <Container py={4}>
         <VStack gap={2}>
           {coupons?.map((v, i) => (
-            <CouponCard key={`voucher-${i}`} {...v} />
+            <CouponCard key={v._id} {...v} />
           ))}
         </VStack>
       </Container>
