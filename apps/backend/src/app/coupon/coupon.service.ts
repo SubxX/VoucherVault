@@ -57,14 +57,6 @@ export class CouponService {
     console.log('createCouponDto', createCouponDto);
     const createdCoupon = await this.baseModel.create(createCouponDto);
 
-    if (createCouponDto.categories) {
-      for (const category of categories) {
-        await this.categoryModel.findByIdAndUpdate(category._id, {
-          $push: { coupons: createdCoupon },
-        });
-      }
-    }
-
     if (createCouponDto?.brand) {
       await this.brandModel.findByIdAndUpdate(brand._id, {
         $push: { coupons: createdCoupon },
