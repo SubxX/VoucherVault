@@ -166,7 +166,6 @@ export class CouponService {
   }
 
   async find(query?) {
-    const validUpto = moment().isSameOrAfter(new Date());
     const page = parseInt(query.page || '0');
     const size = parseInt(query.size || '200');
     const sort = query.sort || '-createdAt';
@@ -193,7 +192,7 @@ export class CouponService {
       }
 
       options = {
-        validUpto,
+        validUpto: { $gte: new Date() },
         ...(query.categories && { categories: { $in: categories } }),
         ...(query.brand && { brand: { $in: brands } }),
         ...(query.title && { title: new RegExp(query.title.toString(), 'i') }),
