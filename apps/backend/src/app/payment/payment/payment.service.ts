@@ -32,7 +32,6 @@ export class PaymentService {
         orderId: body.razorpayOrderId,
       })
       .populate('coupon');
-
     const rzpayment = await this.razorpayClient.payments.fetch(
       body.razorpayPaymentId
     );
@@ -128,11 +127,22 @@ export class PaymentService {
   }
 
   async getAllPaymentsByUser(userId) {
-    return await this.baseModel.find({ user: userId }).populate('coupon user');
+    return await this.baseModel
+      .find({ user: userId })
+      .populate('coupon user payee');
+  }
+
+  async getAllPaymentsByOwner(ownerId) {
+    const payment = await this.baseModel
+      .find({ payee: ownerId })
+      .populate('coupon user payee');
+    return payment;
   }
 
   async getPaymentDetailById(paymentId: string) {
-    return await this.baseModel.findById(paymentId).populate('coupon user');
+    return await this.baseModel
+      .findById(paymentId)
+      .populate('coupon user payee');
   }
 
   async getRzPaymentDetailById(paymentId: string) {

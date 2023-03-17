@@ -83,9 +83,17 @@ export class PaymentController {
   @ApiBearerAuth()
   @UseGuards(SupabaseAuthGuard)
   @ApiOkResponse()
-  @Get('')
+  @Get('/user')
   async getAllPaymentsByUser(@Req() req) {
     return await this.paymentService.getAllPaymentsByUser(req.user._id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(SupabaseAuthGuard)
+  @ApiOkResponse()
+  @Get('/owner')
+  async getAllPaymentsByOwner(@Req() req) {
+    return await this.paymentService.getAllPaymentsByOwner(req.user._id);
   }
 
   @ApiBearerAuth()

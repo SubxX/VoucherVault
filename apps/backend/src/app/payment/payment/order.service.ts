@@ -67,6 +67,7 @@ export class OrderService {
       amount: order.amount,
       currency: order.currency,
       user: req.user._id,
+      payee: coupon.createdBy,
       data: {
         order: order,
       },
