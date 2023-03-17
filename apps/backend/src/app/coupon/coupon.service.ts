@@ -220,6 +220,16 @@ export class CouponService {
     return coupon;
   }
 
+  async findMyCoupons(query?) {
+    const sort = query.sort || '-createdAt';
+    const coupon = await this.baseModel
+      .find(query)
+      .select('+code')
+      .populate('createdBy brand categories medias')
+      .sort(sort);
+    return coupon;
+  }
+
   async findOne(query?) {
     const coupon = await await this.baseModel
       .findOne(query)

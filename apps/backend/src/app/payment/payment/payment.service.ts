@@ -43,7 +43,7 @@ export class PaymentService {
       rzpayment.status == 'captured' &&
       generatedSignature == body.razorpaySignature
     ) {
-      console.log('payment verified');
+      console.log('payment verified', payment);
 
       const updatedPayment = await this.baseModel.findByIdAndUpdate(
         payment.id,
@@ -117,6 +117,14 @@ export class PaymentService {
         HttpStatus.BAD_REQUEST
       );
     }
+  }
+
+  async getPaymentByRzOrderId(rzorderId: string) {
+    const payment = await this.baseModel.findOne({
+      'data.order.id': rzorderId,
+    });
+    console.log('order', payment);
+    return payment;
   }
 
   async getAllPaymentsByUser(userId) {

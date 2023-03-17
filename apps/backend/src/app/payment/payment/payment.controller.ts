@@ -43,14 +43,12 @@ export class PaymentController {
 
   @ApiBearerAuth()
   @UseGuards(SupabaseAuthGuard)
-  @UseGuards(SupabaseAuthGuard)
   @Get('/rz-order/:id')
   async getOrderById(@Param('id') id: string) {
     return await this.orderService.getOrderById(id);
   }
 
   @ApiBearerAuth()
-  @UseGuards(SupabaseAuthGuard)
   @UseGuards(SupabaseAuthGuard)
   @Get('/payments-user/:userId')
   async getAllPaymentForUser(@Param('userId') userId: string) {
@@ -59,15 +57,12 @@ export class PaymentController {
 
   @ApiBearerAuth()
   @UseGuards(SupabaseAuthGuard)
-  @UseGuards(SupabaseAuthGuard)
   @Get('/payment-owners/:userId')
   async getAllPayment(@Param('userId') userId: string) {
     return await this.orderService.getAllPayment(userId);
   }
 
   /****************************** PAYMENTS ***************************************/
-  @ApiBearerAuth()
-  @UseGuards(SupabaseAuthGuard)
   @ApiCreatedResponse()
   @Post('verify-payment')
   async verifyPayment(@Body() body: VerifyPaymentReq) {

@@ -65,7 +65,7 @@ export class CouponController {
     @Query() query: FindCouponQuery
   ): Promise<Coupon[]> {
     query.user = req.user._id;
-    return this.baseService.find(query);
+    return this.baseService.findMyCoupons(query);
   }
 
   @ApiBearerAuth()
