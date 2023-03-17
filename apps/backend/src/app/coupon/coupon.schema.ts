@@ -17,9 +17,6 @@ export class Coupon {
   @Prop({ nullable: true, nmae: 'valid_upto' })
   validUpto: Date;
 
-  @Prop({ nullable: true, name: 'expires_in' })
-  expiresIn: number;
-
   @Prop({
     type: String,
     enum: ['PERCENT', 'AMOUNT'],
@@ -50,6 +47,9 @@ export class Coupon {
 
   @Prop({ type: Boolean, default: false, name: 'is_verified' })
   isVerified: boolean;
+
+  @Prop({ type: Boolean, default: false, name: 'is_available' })
+  isAvailable: boolean;
 
   @Prop({ nullable: true })
   link: string;

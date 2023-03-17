@@ -26,25 +26,13 @@ export class CouponService {
     private readonly brandService: BrandService,
     private readonly categoryService: CategoryService,
     private readonly notificationService: NotificationService
-  ) { }
+  ) {}
 
   async create(createCouponDto: CreateCouponDto) {
     await this.couponAlreadyExist(createCouponDto.code);
 
-    if (createCouponDto.validUpto) {
-      const a = moment(new Date(createCouponDto.validUpto));
-      const b = moment(new Date());
-      createCouponDto.expiresIn = a.diff(b, 'days');
-    }
-
     const brand: any = await this.brandService.findById(createCouponDto?.brand);
     createCouponDto.brand = brand;
-
-    if (createCouponDto.validUpto) {
-      const a = moment(new Date(createCouponDto.validUpto));
-      const b = moment(new Date());
-      createCouponDto.expiresIn = a.diff(b, 'days');
-    }
 
     let categories;
     if (createCouponDto.categories) {
@@ -95,7 +83,6 @@ export class CouponService {
     const categoriesDet = [];
     for (const category of categories) {
       const categoryExists = await this.categoryService.findById(category);
-      console.log(categoryExists)
       categoriesDet.push(categoryExists._id);
     }
     return categoriesDet;
@@ -105,13 +92,11 @@ export class CouponService {
     const couponExists = await this.findOne({
       code: couponCode,
     });
-    console.log(couponExists)
     return couponExists;
   }
 
   async update(id, update) {
     const couponExists = await this.findOneWitCode({ code: update.code });
-    console.log(update)
     if (couponExists.code !== update.code && couponExists)
       throw new HttpException(
         'Coupon Code Already Exists',
@@ -181,6 +166,7 @@ export class CouponService {
   }
 
   async find(query?) {
+    const validUpto = moment().isSameOrAfter(new Date());
     const page = parseInt(query.page || '0');
     const size = parseInt(query.size || '200');
     const sort = query.sort || '-createdAt';
@@ -207,6 +193,7 @@ export class CouponService {
       }
 
       options = {
+        validUpto,
         ...(query.categories && { categories: { $in: categories } }),
         ...(query.brand && { brand: { $in: brands } }),
         ...(query.title && { title: new RegExp(query.title.toString(), 'i') }),

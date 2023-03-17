@@ -4,7 +4,6 @@ import { IsOptional } from 'class-validator';
 export class CouponDto {
   code: string;
   validUpto?: Date;
-  expiresIn?: number;
   type: string;
   value: number;
   title: string;
@@ -16,6 +15,7 @@ export class CouponDto {
   link?: string;
   createdBy?: any;
   medias?: any;
+  isAvailable?: boolean;
 }
 
 export class FindCouponQuery {
@@ -52,6 +52,8 @@ export class FindCouponQuery {
   sort?: string;
 
   createdBy;
+
+  validUpto?;
 }
 
 export class SearchCouponQuery {
