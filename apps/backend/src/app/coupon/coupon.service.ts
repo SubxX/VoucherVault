@@ -105,15 +105,16 @@ export class CouponService {
     const couponExists = await this.findOne({
       code: couponCode,
     });
-    if (couponExists)
+    return couponExists;
+  }
+
+  async update(id, update) {
+    const couponExists = await this.couponAlreadyExist(update.code);
+    if (couponExists.code !== update.code && couponExists)
       throw new HttpException(
         'Coupon Code Already Exists',
         HttpStatus.BAD_REQUEST
       );
-  }
-
-  async update(id, update) {
-    await this.couponAlreadyExist(update.code);
 
     let brand;
     if (update.brand) {

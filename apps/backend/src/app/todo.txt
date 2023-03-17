@@ -1,0 +1,40 @@
+calculate expiresIn if validUpto and vice versa
+calculate  commision amount if percent is passed and store it in value
+check 3 apis for coupon verification
+
+payments - api
+  fetch api (userId)
+  fetch api (couponId)
+  order history (pagination)
+  payment history (pagination)
+
+notification
+  coupon code reveal after payment
+  payment settlement
+payment (single api)
+
+
+bidAmount cannot bre greater than actual coupon amount
+
+for user account linking is compulsory to upload coupon
+
+problem 1: most of the coupon gets wasted as we dont need to shop or we spend extra penny to use coupon
+    user can also generate 2nd source of income by arranging coupons
+    
+  2: incase of emergencies we are not able to attend some meeting or event and our ticket gets wasted 
+    (amount cannot exceed ticket amount) - (can sell only 1 or ticket from one account)
+
+soln: 1. we will build a platform where user can upload their voucher/ticket and get paid for it. 
+  (both user and consumer gets some benefit)
+  (hamare hindi m ek kahawat h. kuch nhi s kuch to acha)
+
+tackle frauds: 
+  1. check for apis to validate coupon and mark it as verified
+  2. apply coupon to the companies website or app and attach a ss for it our team will validate it and mark it as verified
+  
+  3. if payment is completed user will receive notification for coupon code
+    if coupon code is not valid than user should upload a screen shot of coupon invalid and can ask for refund within 3 hours. 
+    our team will verify and initate refund
+    owner can initate payment transfer only after 6 hours of coupon purchase
+
+  4. user will get rated according to his previous history and according to rating user can purchase coupon
