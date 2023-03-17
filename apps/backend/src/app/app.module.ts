@@ -12,8 +12,6 @@ import { NotificationModule } from './notification/notification.module';
 import { PaymentModule } from './payment/payment.module';
 import { UsersModule } from './user/user.module';
 
-console.log('mkdsa', process.env.DB_URI);
-
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.DB_URI),

@@ -41,13 +41,13 @@ export class CreateCouponDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  commisionPercent?: number;
+  title?: number;
 
   @ApiProperty()
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  commissionAmount?: number;
+  bidAmount?: number;
 
   @ApiProperty()
   @IsBoolean()

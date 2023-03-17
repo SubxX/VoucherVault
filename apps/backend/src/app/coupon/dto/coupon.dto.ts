@@ -7,9 +7,10 @@ export class CouponDto {
   expiresIn?: number;
   type: string;
   value: number;
+  title: string;
   description: string;
   commisionPercent?: boolean;
-  commissionAmount?: string;
+  bidAmount?: string;
   isVerified?: boolean;
   categories?: string[];
   link?: string;
@@ -49,6 +50,8 @@ export class FindCouponQuery {
   @ApiProperty({ required: false })
   @IsOptional()
   sort?: string;
+
+  user;
 }
 
 export class SearchCouponQuery {

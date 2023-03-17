@@ -37,9 +37,7 @@ export class CouponService {
       createCouponDto.expiresIn = a.diff(b, 'days');
     }
 
-    const brand: any = await this.brandService.findOne({
-      name: createCouponDto.brand.toLowerCase(),
-    });
+    const brand: any = await this.brandService.findById(createCouponDto?.brand);
     createCouponDto.brand = brand;
 
     if (createCouponDto.validUpto) {
@@ -96,9 +94,7 @@ export class CouponService {
   async getCategoryDetails(categories) {
     const categoriesDet = [];
     for (const category of categories) {
-      const categoryExists = await this.categoryService.findOne({
-        name: category.toLowerCase(),
-      });
+      const categoryExists = await this.categoryService.findById(category.id);
 
       categoriesDet.push(categoryExists._id);
     }

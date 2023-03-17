@@ -59,6 +59,18 @@ export class CouponController {
   @ApiBearerAuth()
   @UseGuards(SupabaseAuthGuard)
   @ApiOkResponse({ type: [CouponDto] })
+  @Get('/my-coupons')
+  findAllByUser(
+    @Req() req,
+    @Query() query: FindCouponQuery
+  ): Promise<Coupon[]> {
+    query.user = req.user._id;
+    return this.baseService.find(query);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(SupabaseAuthGuard)
+  @ApiOkResponse({ type: [CouponDto] })
   @Get('search')
   search(@Query() query: SearchCouponQuery): Promise<Coupon[]> {
     return this.baseService.search(query);
