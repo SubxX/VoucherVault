@@ -26,10 +26,12 @@
     "framer-motion": "^10.4.0",
     "moment": "^2.29.4",
     "mongoose": "^7.0.2",
+    "nestjs-razorpay": "^1.0.3",
     "nestjs-supabase-auth": "1.0.9",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "razorpay": "^2.8.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.5",
@@ -39,7 +41,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "swagger": "^0.7.5",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "uniqid": "^5.4.0"
   },
   "devDependencies": {
     "@nestjs/schematics": "8.0.0",
