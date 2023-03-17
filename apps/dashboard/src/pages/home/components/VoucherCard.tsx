@@ -4,7 +4,7 @@ import { Card, CardBody, CardFooter, CardHeader } from '@chakra-ui/card';
 import { Box, Heading, HStack, Text, Stack } from '@chakra-ui/layout';
 import VerifiedIcon from '@dashboard/assets/icons/VerifiedIcon';
 import Rating from '@dashboard/components/Rating';
-import { IVoucher } from '@dashboard/interfaces/voucher.interface';
+import { IVoucher } from '@dashboard/interfaces/coupon.interface';
 import { Link } from 'react-router-dom';
 
 const VoucherCard = ({

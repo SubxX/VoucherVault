@@ -30,7 +30,7 @@ import { CreateCouponDto } from './dto/create-coupon.dto';
 @ApiTags('-Coupons')
 @Controller({ path: 'coupon', version: '1' })
 export class CouponController {
-  constructor(private baseService: CouponService) {}
+  constructor(private baseService: CouponService) { }
   @ApiBearerAuth()
   @UseGuards(SupabaseAuthGuard)
   @ApiCreatedResponse()
@@ -64,7 +64,8 @@ export class CouponController {
     @Req() req,
     @Query() query: FindCouponQuery
   ): Promise<Coupon[]> {
-    query.user = req.user._id;
+    console.log(req.createdBy)
+    query.createdBy = req.user._id;
     return this.baseService.findMyCoupons(query);
   }
 

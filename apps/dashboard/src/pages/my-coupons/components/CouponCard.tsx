@@ -6,13 +6,37 @@ import {
   CardBody,
   Text,
   IconButton,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  Button,
+  AlertDialogContent,
+  useDisclosure,
 } from '@chakra-ui/react';
 import VerifiedIcon from '@dashboard/assets/icons/VerifiedIcon';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
-import { IVoucher } from '@dashboard/interfaces/voucher.interface';
+import { ICoupon } from '@dashboard/interfaces/coupon.interface';
+import { useDeleteCouponMutation } from '@dashboard/store/api/coupon.query';
+import { useRef } from 'react';
+import { useAppDispatch } from '@dashboard/store/store';
+import { openDialog } from '@dashboard/store/features/coupon/coupon-handler.slice';
 
-const CouponCard = ({ title, description }: IVoucher) => {
+const CouponCard = (props: ICoupon) => {
+  const { title, description, bidAmount, _id } = props;
+  const [deleteCoupon, { isLoading }] = useDeleteCouponMutation();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef<any>();
+  const dispatch = useAppDispatch();
+
+  const closeDialog = () => {
+    if (isLoading) return;
+    onClose();
+  };
+  const editCoupon = () => dispatch(openDialog(props));
+
   return (
     <Card background="customBg" w="full" p={4} variant="outline">
       <CardHeader p={0}>
@@ -32,8 +56,45 @@ const CouponCard = ({ title, description }: IVoucher) => {
                 size="xs"
               />
               <MenuList>
-                <MenuItem>Edit</MenuItem>
-                <MenuItem>Delete</MenuItem>
+                <MenuItem onClick={onOpen}>Delete</MenuItem>
+
+                <AlertDialog
+                  leastDestructiveRef={cancelRef}
+                  isOpen={isOpen}
+                  onClose={closeDialog}
+                >
+                  <AlertDialogOverlay>
+                    <AlertDialogContent>
+                      <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                        Delete Coupon
+                      </AlertDialogHeader>
+
+                      <AlertDialogBody>
+                        Are you sure? You can't undo this action afterwards.
+                      </AlertDialogBody>
+
+                      <AlertDialogFooter>
+                        <Button
+                          onClick={closeDialog}
+                          ref={cancelRef}
+                          isDisabled={isLoading}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          onClick={deleteCoupon.bind(this, _id)}
+                          ml={3}
+                          isLoading={isLoading}
+                        >
+                          Delete
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialogOverlay>
+                </AlertDialog>
+
+                <MenuItem onClick={editCoupon}>Edit</MenuItem>
               </MenuList>
             </Menu>
           </HStack>
@@ -43,6 +104,10 @@ const CouponCard = ({ title, description }: IVoucher) => {
         <Text fontWeight={400} fontSize="sm">
           {description}
         </Text>
+
+        <HStack gap={4} justifyContent="space-between" mt={2}>
+          <Text fontWeight={500} fontSize="2xl">{`Rs. ${bidAmount}`}</Text>
+        </HStack>
       </CardBody>
     </Card>
   );

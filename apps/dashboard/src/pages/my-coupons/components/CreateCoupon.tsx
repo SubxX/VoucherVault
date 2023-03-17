@@ -7,54 +7,112 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalFooter,
-  useDisclosure,
   IconButton,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
   Textarea,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from '@chakra-ui/react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { Controller, useForm } from 'react-hook-form';
 import { Select } from 'chakra-react-select';
 import { useGetCategoriesQuery } from '@dashboard/store/api/categories.query';
 import { useGetBrandsQuery } from '@dashboard/store/api/brand.query';
+import {
+  useAddCouponMutation,
+  useUpdateCouponMutation,
+} from '@dashboard/store/api/coupon.query';
+import { ICoupon } from '@dashboard/interfaces/coupon.interface';
+import { useAppDispatch, useAppSelector } from '@dashboard/store/store';
+import {
+  openDialog,
+  closeDialog,
+} from '@dashboard/store/features/coupon/coupon-handler.slice';
+import { useEffect } from 'react';
+import dayjs from 'dayjs';
 
-type ICoupon = {
-  title: string;
-  code: string;
-  validUpto: string;
-  expiresIn?: number;
-  type: any[];
-  description?: string;
-  commisionPercent?: number;
-  commissionAmount?: number;
-  categories: any[];
-  link: string;
-  brand: any[];
+type SelectProp = {
+  value: string;
+  label: string;
+};
+type ICouponForm = Omit<ICoupon, 'brand' | 'categories' | 'type'> & {
+  type: SelectProp;
+  categories: SelectProp[];
+  brand: SelectProp;
 };
 
+const CouponPaymentType = [
+  {
+    label: 'Percent',
+    value: 'PERCENT',
+  },
+  {
+    label: 'Amount',
+    value: 'AMOUNT',
+  },
+];
+
 const Form = ({ onClose }: any) => {
+  const [createCoupon] = useAddCouponMutation();
+  const [editCoupon] = useUpdateCouponMutation();
+
   const { data: categories } = useGetCategoriesQuery();
   const { data: brands } = useGetBrandsQuery();
+  const { loading: isLoading, startData } = useAppSelector(
+    (state) => state.couponHandler
+  );
+  const isEdit = Boolean(startData);
 
-  const { control, reset, handleSubmit } = useForm<ICoupon>({
+  const { control, handleSubmit, setValue } = useForm<ICouponForm>({
     defaultValues: {
-      title: '',
-      code: '',
-      validUpto: '',
-      expiresIn: undefined,
-      type: [''],
-      description: '',
-      categories: [],
-      link: '',
-      brand: [''],
+      title: startData?.title ?? '',
+      code: startData?.code ?? '',
+      validUpto: dayjs(startData?.validUpto).format('YYYY-MM-DD') ?? '',
+      description: startData?.description ?? '',
+      link: startData?.link ?? '',
+      bidAmount: startData?.bidAmount ?? undefined,
     },
   });
 
-  const onSubmit = (payload: ICoupon) => {
-    console.log(payload);
+  useEffect(() => {
+    if (startData) {
+      const selectedBrand = startData?.brand as any;
+      const brand = { value: selectedBrand?.label, label: selectedBrand.name };
+
+      const selectedCategories = startData?.categories as any;
+      const categories = selectedCategories?.map((c: any) => ({
+        value: c.id,
+        label: c.name,
+      }));
+      const type = CouponPaymentType.find(
+        (c) => c.value === startData?.type
+      ) as any;
+
+      setValue('categories', categories);
+      setValue('brand', brand);
+      setValue('type', type);
+    }
+  }, [startData]);
+
+  const onSubmit = (payload: ICouponForm) => {
+    const { brand, categories, type, ...rest } = payload;
+    const formattedPayload = {
+      ...rest,
+      type: type?.value,
+      categories: categories?.map(({ value }) => value),
+      brand: brand.value,
+    };
+    if (isEdit) {
+      editCoupon({ ...formattedPayload, _id: startData?._id as string });
+      return;
+    }
+    createCoupon(formattedPayload);
   };
 
   return (
@@ -145,16 +203,7 @@ const Form = ({ onClose }: any) => {
                 value={value}
                 onChange={onChange}
                 colorScheme="purple"
-                options={[
-                  {
-                    label: 'Percent',
-                    value: 'PERCENT',
-                  },
-                  {
-                    label: 'Value',
-                    value: 'VALUE',
-                  },
-                ]}
+                options={CouponPaymentType}
               />
               <FormErrorMessage>{errors?.type?.message}</FormErrorMessage>
             </FormControl>
@@ -180,42 +229,64 @@ const Form = ({ onClose }: any) => {
 
         <Controller
           control={control}
-          name="description"
+          name="bidAmount"
           rules={{ required: 'Required' }}
           render={({ field: { value, onChange }, formState: { errors } }) => (
-            <FormControl isInvalid={Boolean(errors?.description?.message)}>
+            <FormControl isInvalid={Boolean(errors?.code?.message)}>
+              <FormLabel>Bid Amount</FormLabel>
+              <NumberInput value={value} onChange={onChange} variant="filled">
+                <NumberInputField
+                  rounded="full"
+                  placeholder="Enter your price"
+                />
+                <NumberInputStepper w="40px">
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+              <FormErrorMessage>{errors?.code?.message}</FormErrorMessage>
+            </FormControl>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="description"
+          render={({ field: { value, onChange }, formState: { errors } }) => (
+            <FormControl>
               <FormLabel>Description</FormLabel>
               <Textarea
                 placeholder="Enter Description if any"
                 value={value}
                 onChange={onChange}
               />
-
-              <FormErrorMessage>
-                {errors?.description?.message}
-              </FormErrorMessage>
             </FormControl>
           )}
         />
       </ModalBody>
 
       <ModalFooter>
-        <Button variant="primary" mr={3} type="submit">
+        <Button variant="primary" mr={3} type="submit" isLoading={isLoading}>
           Save
         </Button>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose} isDisabled={isLoading}>
+          Cancel
+        </Button>
       </ModalFooter>
     </ModalContent>
   );
 };
 
 const CreateCoupon = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useAppDispatch();
+  const openAddDialog = () => dispatch(openDialog());
+  const onClose = () => dispatch(closeDialog());
+  const isOpen = useAppSelector((state) => state.couponHandler.open);
 
   return (
     <>
       <IconButton
-        onClick={onOpen}
+        onClick={openAddDialog}
         variant="primary"
         aria-label="Create Coupon"
         size="sm"

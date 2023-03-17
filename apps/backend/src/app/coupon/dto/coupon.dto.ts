@@ -51,7 +51,7 @@ export class FindCouponQuery {
   @IsOptional()
   sort?: string;
 
-  user;
+  createdBy;
 }
 
 export class SearchCouponQuery {
