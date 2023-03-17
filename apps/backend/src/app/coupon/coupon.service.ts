@@ -26,7 +26,7 @@ export class CouponService {
     private readonly brandService: BrandService,
     private readonly categoryService: CategoryService,
     private readonly notificationService: NotificationService
-  ) {}
+  ) { }
 
   async create(createCouponDto: CreateCouponDto) {
     await this.couponAlreadyExist(createCouponDto.code);
@@ -94,8 +94,8 @@ export class CouponService {
   async getCategoryDetails(categories) {
     const categoriesDet = [];
     for (const category of categories) {
-      const categoryExists = await this.categoryService.findById(category.id);
-
+      const categoryExists = await this.categoryService.findById(category);
+      console.log(categoryExists)
       categoriesDet.push(categoryExists._id);
     }
     return categoriesDet;
@@ -105,11 +105,13 @@ export class CouponService {
     const couponExists = await this.findOne({
       code: couponCode,
     });
+    console.log(couponExists)
     return couponExists;
   }
 
   async update(id, update) {
-    const couponExists = await this.couponAlreadyExist(update.code);
+    const couponExists = await this.findOneWitCode({ code: update.code });
+    console.log(update)
     if (couponExists.code !== update.code && couponExists)
       throw new HttpException(
         'Coupon Code Already Exists',
@@ -118,11 +120,9 @@ export class CouponService {
 
     let brand;
     if (update.brand) {
-      brand = await this.brandService.findOne({
-        name: update.brand.toLowerCase(),
-      });
+      brand = await this.brandService.findById(update.brand);
     }
-    update.brand = brand._id;
+    update.brand = brand?._id;
 
     //update categories
     let categories;
@@ -239,6 +239,14 @@ export class CouponService {
   async findOne(query?) {
     const coupon = await await this.baseModel
       .findOne(query)
+      .populate('createdBy brand categories medias');
+    return coupon;
+  }
+
+  async findOneWitCode(query?) {
+    const coupon = await await this.baseModel
+      .findOne(query)
+      .select('+code')
       .populate('createdBy brand categories medias');
     return coupon;
   }

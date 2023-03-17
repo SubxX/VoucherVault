@@ -1,4 +1,4 @@
-import { IVoucher } from "@dashboard/interfaces/voucher.interface";
+import { IVoucher } from "@dashboard/interfaces/coupon.interface";
 
 
 export const Vouchers: IVoucher[] = [
