@@ -5,6 +5,7 @@ import { Box, Heading, HStack, Text, Stack } from '@chakra-ui/layout';
 import VerifiedIcon from '@dashboard/assets/icons/VerifiedIcon';
 import Rating from '@dashboard/components/Rating';
 import { IVoucher } from '@dashboard/interfaces/voucher.interface';
+import { Link } from 'react-router-dom';
 
 const VoucherCard = ({
   title,
@@ -12,6 +13,7 @@ const VoucherCard = ({
   sellerName,
   price,
   rating,
+  _id,
 }: IVoucher) => {
   return (
     <Card background="customBg" w="full" p={4} variant="outline">
@@ -50,7 +52,9 @@ const VoucherCard = ({
           </HStack>
           <HStack gap={4} justifyContent="space-between" m={0}>
             <Text fontWeight={500} fontSize="2xl">{`Rs. ${price}`}</Text>
-            <Button variant="primary">Purchase</Button>
+            <Button variant="primary" as={Link} to={`/checkout/${_id}`}>
+              Purchase
+            </Button>
           </HStack>
         </Stack>
       </CardFooter>

@@ -14,6 +14,9 @@ import MyCoupons from '../pages/my-coupons';
 import MyOrders from '../pages/my-orders';
 import Profile from '../pages/profile';
 import DashboardHome from '@dashboard/pages/dashboard-home';
+import Checkout from '@dashboard/pages/checkout';
+
+// Hooks
 import useSupabaseAuthStateListener from '@dashboard/hooks/useSupabaseAuthStateListener';
 import useInitUser from '@dashboard/hooks/useInitUser';
 
@@ -26,6 +29,7 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" index element={<Home />} />
+          <Route path="checkout/:id" element={<Checkout />} />
         </Route>
 
         <Route path="dashboard" element={<DashboardLayout />}>
@@ -34,6 +38,8 @@ function App() {
           <Route path="my-orders" element={<MyOrders />} />
           <Route path="profile" element={<Profile />} />
         </Route>
+
+        <Route path="*" element={<p>404</p>} />
       </Routes>
     </ChakraBaseProvider>
   );
