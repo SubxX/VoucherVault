@@ -22,11 +22,18 @@ async function bootstrap() {
   });
 
   app.enableCors();
-
   await app.listen(process.env.PORT || 3333);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${process.env.PORT || 3333}`
-  );
+  if (process.env.ENV == 'dev') {
+    Logger.log(
+      `🚀 Application is running on: ${process.env.PROTOCOL}://${
+        process.env.HOST
+      }:${process.env.PORT || 3333}`
+    );
+  } else {
+    Logger.log(
+      `🚀 Application is running on: ${process.env.PROTOCOL}://${process.env.HOST}`
+    );
+  }
 }
 
 bootstrap();
