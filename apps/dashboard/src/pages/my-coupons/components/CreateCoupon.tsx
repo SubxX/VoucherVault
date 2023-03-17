@@ -13,19 +13,20 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
-  Grid,
   Textarea,
 } from '@chakra-ui/react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { Controller, useForm } from 'react-hook-form';
 import { Select } from 'chakra-react-select';
+import { useGetCategoriesQuery } from '@dashboard/store/api/categories.query';
+import { useGetBrandsQuery } from '@dashboard/store/api/brand.query';
 
 type ICoupon = {
   title: string;
   code: string;
   validUpto: string;
-  expiresIn: number;
-  paymentType: any[];
+  expiresIn?: number;
+  type: any[];
   description?: string;
   commisionPercent?: number;
   commissionAmount?: number;
@@ -35,13 +36,16 @@ type ICoupon = {
 };
 
 const Form = ({ onClose }: any) => {
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: brands } = useGetBrandsQuery();
+
   const { control, reset, handleSubmit } = useForm<ICoupon>({
     defaultValues: {
       title: '',
       code: '',
       validUpto: '',
       expiresIn: undefined,
-      paymentType: [''],
+      type: [''],
       description: '',
       categories: [],
       link: '',
@@ -86,16 +90,7 @@ const Form = ({ onClose }: any) => {
                 value={value}
                 onChange={onChange}
                 colorScheme="purple"
-                options={[
-                  {
-                    label: 'Nyka',
-                    value: 'nyka',
-                  },
-                  {
-                    label: 'Paytm',
-                    value: 'paytm',
-                  },
-                ]}
+                options={brands ?? []}
               />
               <FormErrorMessage>{errors?.brand?.message}</FormErrorMessage>
             </FormControl>
@@ -114,68 +109,37 @@ const Form = ({ onClose }: any) => {
                 onChange={onChange}
                 isMulti
                 colorScheme="purple"
-                options={[
-                  {
-                    label: 'Nyka',
-                    value: 'nyka',
-                  },
-                  {
-                    label: 'Paytm',
-                    value: 'paytm',
-                  },
-                ]}
+                options={categories ?? []}
               />
               <FormErrorMessage>{errors?.categories?.message}</FormErrorMessage>
             </FormControl>
           )}
         />
 
-        <Grid gridTemplateColumns="1fr 1fr" gap={6}>
-          <Controller
-            control={control}
-            name="validUpto"
-            rules={{ required: 'Required' }}
-            render={({ field: { value, onChange }, formState: { errors } }) => (
-              <FormControl isInvalid={Boolean(errors?.validUpto?.message)}>
-                <FormLabel>Valid Upto</FormLabel>
-                <Input
-                  placeholder="Valid Upto"
-                  value={value}
-                  onChange={onChange}
-                />
-                <FormErrorMessage>
-                  {errors?.validUpto?.message}
-                </FormErrorMessage>
-              </FormControl>
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="expiresIn"
-            rules={{ required: 'Required' }}
-            render={({ field: { value, onChange }, formState: { errors } }) => (
-              <FormControl isInvalid={Boolean(errors?.expiresIn?.message)}>
-                <FormLabel>Valid Upto</FormLabel>
-                <Input
-                  placeholder="Expires In"
-                  value={value}
-                  onChange={onChange}
-                />
-                <FormErrorMessage>
-                  {errors?.expiresIn?.message}
-                </FormErrorMessage>
-              </FormControl>
-            )}
-          />
-        </Grid>
+        <Controller
+          control={control}
+          name="validUpto"
+          rules={{ required: 'Required' }}
+          render={({ field: { value, onChange }, formState: { errors } }) => (
+            <FormControl isInvalid={Boolean(errors?.validUpto?.message)}>
+              <FormLabel>Valid Upto</FormLabel>
+              <Input
+                type="date"
+                placeholder="Valid Upto"
+                value={value}
+                onChange={onChange}
+              />
+              <FormErrorMessage>{errors?.validUpto?.message}</FormErrorMessage>
+            </FormControl>
+          )}
+        />
 
         <Controller
           control={control}
-          name="paymentType"
+          name="type"
           rules={{ required: 'Required' }}
           render={({ field: { value, onChange }, formState: { errors } }) => (
-            <FormControl isInvalid={Boolean(errors?.paymentType?.message)}>
+            <FormControl isInvalid={Boolean(errors?.type?.message)}>
               <FormLabel>Payment Type</FormLabel>
               <Select
                 value={value}
@@ -183,18 +147,16 @@ const Form = ({ onClose }: any) => {
                 colorScheme="purple"
                 options={[
                   {
-                    label: 'Nyka',
-                    value: 'nyka',
+                    label: 'Percent',
+                    value: 'PERCENT',
                   },
                   {
-                    label: 'Paytm',
-                    value: 'paytm',
+                    label: 'Value',
+                    value: 'VALUE',
                   },
                 ]}
               />
-              <FormErrorMessage>
-                {errors?.paymentType?.message}
-              </FormErrorMessage>
+              <FormErrorMessage>{errors?.type?.message}</FormErrorMessage>
             </FormControl>
           )}
         />
