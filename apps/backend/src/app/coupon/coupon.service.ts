@@ -125,6 +125,11 @@ export class CouponService {
     update.brand = brand._id;
 
     //update categories
+    let categories;
+    if (update.categories) {
+      categories = await this.getCategoryDetails(update.categories);
+      update.categories = categories;
+    }
 
     const coupon = await this.findById(id);
     await this.baseModel.findByIdAndUpdate(coupon._id, update);
