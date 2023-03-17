@@ -180,20 +180,20 @@ export class CouponService {
     } else {
       if (query?.category) {
         categories = await this.categoryModel.find(
-          { name: { $in: query.category } },
+          { _id: { $in: query.category } },
           { id: true }
         );
       }
       if (query?.brand) {
         brands = await this.brandModel.find(
-          { name: { $in: query.brand } },
+          { _id: { $in: query.brand } },
           { id: true }
         );
       }
 
       options = {
         validUpto: { $gte: new Date() },
-        ...(query.categories && { categories: { $in: categories } }),
+        ...(query.category && { categories: { $in: categories } }),
         ...(query.brand && { brand: { $in: brands } }),
         ...(query.title && { title: new RegExp(query.title.toString(), 'i') }),
         ...(query.description && {
