@@ -1,5 +1,13 @@
 import { Link, Navigate, Outlet } from 'react-router-dom';
-import { Box, VStack, IconButton, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  HStack,
+  IconButton,
+  Tooltip,
+  Center,
+  Spinner,
+  VStack,
+} from '@chakra-ui/react';
 import { LinkProps, NavLink } from 'react-router-dom';
 import AppLogo from '@dashboard/components/AppLogo';
 import DarkModeToggler from '@dashboard/components/DarkModeToggler';
@@ -7,6 +15,7 @@ import { BiLogOutCircle } from 'react-icons/bi';
 import { RiCoupon5Line, RiHistoryLine, RiSettings2Line } from 'react-icons/ri';
 import { useAppSelector } from '@dashboard/store/store';
 import { supabase } from '@dashboard/utils/supabase.utils';
+import logo from '../assets/png/VoucherVaultLogo.png';
 
 // Custon Link Component
 type CustomLinkProps = LinkProps & { label: string };
@@ -97,7 +106,16 @@ const DashboardLayout = () => {
   const { loading, user, error } = useAppSelector((state) => state.auth);
 
   if (error) return <p>Something went wrong</p>;
-  if (loading || !user) return <p>Loading</p>;
+  if (loading || !user)
+    return (
+      <Center height="100vh" flexDir="column">
+        <img src={logo} alt="Voucher Vault" width={140} />
+        <HStack alignItems="center" mr="30px">
+          <Spinner mr={2} size="sm" />
+          <span>Loading</span>
+        </HStack>
+      </Center>
+    );
   if (!user) return <Navigate to="/" />;
 
   return (
