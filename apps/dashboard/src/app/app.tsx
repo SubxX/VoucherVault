@@ -14,7 +14,6 @@ import MyCoupons from '../pages/my-coupons';
 import MyOrders from '../pages/my-orders';
 import Profile from '../pages/profile';
 import DashboardHome from '@dashboard/pages/dashboard-home';
-import Checkout from '@dashboard/pages/checkout';
 
 // Hooks
 import useSupabaseAuthStateListener from '@dashboard/hooks/useSupabaseAuthStateListener';
@@ -29,7 +28,6 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" index element={<Home />} />
-          <Route path="checkout/:id" element={<Checkout />} />
         </Route>
 
         <Route path="dashboard" element={<DashboardLayout />}>
