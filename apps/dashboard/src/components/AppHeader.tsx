@@ -1,10 +1,9 @@
 import AppLogo from './AppLogo';
 import { Box, Container, Flex } from '@chakra-ui/react';
-import AppSearchbar from './AppSearchbar';
 import { useMediaQuery } from '@chakra-ui/react';
 import DarkModeToggler from './DarkModeToggler';
 import { Link } from 'react-router-dom';
-import { Auth } from './auth';
+import Auth from './auth/Auth';
 
 const AppHeader = () => {
   const [isTab] = useMediaQuery('(min-width: 768px)');
