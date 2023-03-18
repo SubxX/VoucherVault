@@ -26,7 +26,7 @@ export class CouponService {
     private readonly brandService: BrandService,
     private readonly categoryService: CategoryService,
     private readonly notificationService: NotificationService
-  ) {}
+  ) { }
 
   async create(createCouponDto: CreateCouponDto) {
     await this.couponAlreadyExist(createCouponDto.code);
@@ -96,8 +96,8 @@ export class CouponService {
   }
 
   async update(id, update) {
-    const couponExists = await this.findOneWitCode({ code: update.code });
-    if (couponExists.code !== update.code && couponExists)
+    const couponExists = await this.findOneWitCode({ code: update?.code });
+    if (couponExists?.code !== update?.code && couponExists)
       throw new HttpException(
         'Coupon Code Already Exists',
         HttpStatus.BAD_REQUEST
@@ -118,6 +118,12 @@ export class CouponService {
 
     const coupon = await this.findById(id);
     await this.baseModel.findByIdAndUpdate(coupon._id, update);
+
+    return await this.findById(id);
+  }
+
+  async updateAvialbility(id, update) {
+    await this.baseModel.findByIdAndUpdate(id, update);
 
     return await this.findById(id);
   }
@@ -192,6 +198,7 @@ export class CouponService {
       }
 
       options = {
+        isAvailable: true,
         validUpto: { $gte: new Date() },
         ...(query.category && { categories: { $in: categories } }),
         ...(query.brand && { brand: { $in: brands } }),

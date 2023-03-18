@@ -72,6 +72,7 @@ export class OrderService {
       data: {
         order: order,
       },
+      coupon: coupon
     };
     const pay = await this.baseModel.create(paymentPayload);
     return pay;

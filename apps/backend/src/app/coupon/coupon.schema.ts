@@ -48,7 +48,7 @@ export class Coupon {
   @Prop({ type: Boolean, default: false, name: 'is_verified' })
   isVerified: boolean;
 
-  @Prop({ type: Boolean, default: false, name: 'is_available' })
+  @Prop({ type: Boolean, default: true, name: 'is_available' })
   isAvailable: boolean;
 
   @Prop({ nullable: true })

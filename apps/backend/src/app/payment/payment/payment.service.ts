@@ -7,6 +7,7 @@ import { PaymentIntent, PaymentIntentDocument } from './payment-intent.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { paymentGatewayCreds } from '@backend/common/payment-gateway.config';
+import { CouponService } from '@backend/app/coupon/coupon.service';
 
 @Injectable()
 export class PaymentService {
@@ -18,8 +19,9 @@ export class PaymentService {
   constructor(
     @InjectRazorpay() private readonly razorpayClient: Razorpay,
     @InjectModel(PaymentIntent.name)
-    private baseModel: Model<PaymentIntentDocument>
-  ) {}
+    private baseModel: Model<PaymentIntentDocument>,
+    private couponService: CouponService
+  ) { }
 
   async paymentVerification(body: VerifyPaymentReq) {
     const generatedSignature = crypto
@@ -43,6 +45,11 @@ export class PaymentService {
       generatedSignature == body.razorpaySignature
     ) {
       console.log('payment verified', payment);
+
+      const update = await this.couponService.updateAvialbility(payment.coupon, {
+        isAvailable: false
+      })
+      console.log(update)
 
       const updatedPayment = await this.baseModel.findByIdAndUpdate(
         payment.id,
