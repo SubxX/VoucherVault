@@ -12,12 +12,15 @@ import { PaymentAccountController } from './account/payment-account.controller';
 import { CouponSchema } from '../coupon/coupon.schema';
 import { paymentGatewayCreds } from '@backend/common/payment-gateway.config';
 import { UsersModule } from '../user/user.module';
+import { UserSchema } from '../user/user.schema';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: 'PaymentIntent', schema: PaymentIntentSchema },
       { name: 'PaymentAccount', schema: PaymentAccountSchema },
+      { name: 'User', schema: UserSchema },
       { name: 'Coupon', schema: CouponSchema },
     ]),
     RazorpayModule.forRoot({
@@ -25,6 +28,7 @@ import { UsersModule } from '../user/user.module';
       key_secret: paymentGatewayCreds.paymentKeySecret,
     }),
     CouponModule,
+    NotificationModule,
     UsersModule,
   ],
   controllers: [PaymentController, PaymentAccountController],
