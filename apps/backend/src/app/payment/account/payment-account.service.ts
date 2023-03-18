@@ -15,7 +15,7 @@ export class PaymentAccountService {
   constructor(
     @InjectModel(PaymentAccount.name)
     private baseModel: Model<PaymentAccountDocument>
-  ) {}
+  ) { }
 
   async createLinkedAccount(body, req?) {
     try {
@@ -231,6 +231,7 @@ export class PaymentAccountService {
   }
 
   async createCompleteLinkedAccount(body: CretaeLinkedAccountReq, req) {
+    console.log("body", body, req.user,)
     let paymentAccount = await this.fetchPaymentAccount(req.user._id);
     let linkedAccount = paymentAccount?.linkedAccount,
       productConfiguration = paymentAccount?.productConfiguration;
@@ -271,7 +272,9 @@ export class PaymentAccountService {
       productConfiguration: updateProductConfiguration,
     });
 
-    return await this.fetchPaymentAccount(req.user._id);
+    const account = await this.fetchPaymentAccount(req.user._id);
+    console.log("final account", account)
+    return account
   }
 
   async createPaymentAccount(body) {
@@ -279,9 +282,11 @@ export class PaymentAccountService {
   }
 
   async fetchPaymentAccount(id) {
+    console.log(id)
     const paymentAccount = await this.baseModel.findOne({
-      userId: id,
+      user: id,
     });
+    console.log("paymentAccount", paymentAccount)
     return paymentAccount;
   }
 

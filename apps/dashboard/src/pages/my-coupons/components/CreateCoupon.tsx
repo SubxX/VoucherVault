@@ -36,6 +36,7 @@ import {
 } from '@dashboard/store/features/coupon/coupon-handler.slice';
 import { useEffect } from 'react';
 import dayjs from 'dayjs';
+import { openDialog as openOnboardingDialog } from '@dashboard/store/features/onboarding/onboarding.slice';
 
 type SelectProp = {
   value: string;
@@ -279,9 +280,20 @@ const Form = ({ onClose }: any) => {
 
 const CreateCoupon = () => {
   const dispatch = useAppDispatch();
-  const openAddDialog = () => dispatch(openDialog());
+  const { onboarding, onboardingLoading } = useAppSelector(
+    (state) => state.onboarding
+  );
+
+  const openAddDialog = () => {
+    if (!onboarding) {
+      dispatch(openOnboardingDialog());
+      return;
+    }
+    dispatch(openDialog());
+  };
   const onClose = () => dispatch(closeDialog());
   const isOpen = useAppSelector((state) => state.couponHandler.open);
+  console.log(isOpen);
 
   return (
     <>
@@ -290,11 +302,12 @@ const CreateCoupon = () => {
         variant="primary"
         aria-label="Create Coupon"
         size="sm"
+        isLoading={onboardingLoading}
       >
         <AiOutlinePlus />
       </IconButton>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={Boolean(isOpen)} onClose={onClose}>
         <ModalOverlay />
         <Form onClose={onClose} />
       </Modal>

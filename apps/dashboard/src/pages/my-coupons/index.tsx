@@ -3,6 +3,7 @@ import CouponCard from './components/CouponCard';
 import DashboardHeader from '@dashboard/components/DashboardHeader';
 import CreateCoupon from './components/CreateCoupon';
 import { useGetMyCouponsQuery } from '@dashboard/store/api/coupon.query';
+import LinkBankAccount from '@dashboard/components/LinkBankAccount';
 
 const MyCoupons = () => {
   const { data: coupons, isLoading } = useGetMyCouponsQuery();
@@ -17,6 +18,8 @@ const MyCoupons = () => {
             <Spinner />
           </Center>
         )}
+
+        <LinkBankAccount />
 
         {!isLoading && !coupons?.length && <Center>No coupons found!</Center>}
 
