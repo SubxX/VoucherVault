@@ -35,7 +35,7 @@ export const axiosBaseQuery = (): BaseQueryFn<
   async ({ url, method, data, params }) => {
     try {
       const result = await axiosInstance({ url, method, data, params })
-      return result.data
+      return result
     } catch (axiosError) {
       const err = axiosError as AxiosError
       return {

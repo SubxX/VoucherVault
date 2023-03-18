@@ -11,8 +11,7 @@ import { MediaModule } from './media/media.module';
 import { NotificationModule } from './notification/notification.module';
 import { PaymentModule } from './payment/payment.module';
 import { UsersModule } from './user/user.module';
-
-console.log('mkdsa', process.env.DB_URI);
+import { VerificationModule } from './verification/verification.module';
 
 @Module({
   imports: [
@@ -25,6 +24,7 @@ console.log('mkdsa', process.env.DB_URI);
     CouponModule,
     NotificationModule,
     PaymentModule,
+    VerificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

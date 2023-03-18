@@ -4,17 +4,18 @@ import { IsOptional } from 'class-validator';
 export class CouponDto {
   code: string;
   validUpto?: Date;
-  expiresIn?: number;
   type: string;
   value: number;
+  title: string;
   description: string;
   commisionPercent?: boolean;
-  commissionAmount?: string;
+  bidAmount?: string;
   isVerified?: boolean;
   categories?: string[];
   link?: string;
   createdBy?: any;
   medias?: any;
+  isAvailable?: boolean;
 }
 
 export class FindCouponQuery {
@@ -49,6 +50,10 @@ export class FindCouponQuery {
   @ApiProperty({ required: false })
   @IsOptional()
   sort?: string;
+
+  createdBy;
+
+  validUpto?;
 }
 
 export class SearchCouponQuery {

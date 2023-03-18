@@ -54,6 +54,7 @@ const Auth = () => {
         flex="none"
         rightIcon={<IoArrowForwardOutline />}
         onClick={onOpen}
+        isLoading={loading}
       >
         Sign In
       </Button>

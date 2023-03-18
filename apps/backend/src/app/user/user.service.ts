@@ -15,7 +15,7 @@ export class UsersService {
   }
 
   async updateUser(id: string, payload: CreateUserDto) {
-    return this.baseModel.findByIdAndUpdate(id, payload);
+    return this.baseModel.findByIdAndUpdate(id, payload, { new: true });
   }
 
   async getByEmail(email: string) {

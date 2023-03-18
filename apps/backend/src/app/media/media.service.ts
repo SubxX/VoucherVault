@@ -55,7 +55,8 @@ export class MediaService {
   async update(id: string, updateMedia) {
     const updatedMedia = await this.baseModel.findByIdAndUpdate(
       id,
-      updateMedia
+      updateMedia,
+      { new: true }
     );
     return updatedMedia;
   }

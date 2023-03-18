@@ -7,6 +7,7 @@ import { PaymentIntent, PaymentIntentDocument } from './payment-intent.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { paymentGatewayCreds } from '@backend/common/payment-gateway.config';
+import { CouponService } from '@backend/app/coupon/coupon.service';
 
 @Injectable()
 export class PaymentService {
@@ -18,8 +19,9 @@ export class PaymentService {
   constructor(
     @InjectRazorpay() private readonly razorpayClient: Razorpay,
     @InjectModel(PaymentIntent.name)
-    private baseModel: Model<PaymentIntentDocument>
-  ) {}
+    private baseModel: Model<PaymentIntentDocument>,
+    private couponService: CouponService
+  ) { }
 
   async paymentVerification(body: VerifyPaymentReq) {
     const generatedSignature = crypto
@@ -32,7 +34,6 @@ export class PaymentService {
         orderId: body.razorpayOrderId,
       })
       .populate('coupon');
-
     const rzpayment = await this.razorpayClient.payments.fetch(
       body.razorpayPaymentId
     );
@@ -43,7 +44,12 @@ export class PaymentService {
       rzpayment.status == 'captured' &&
       generatedSignature == body.razorpaySignature
     ) {
-      console.log('payment verified');
+      console.log('payment verified', payment);
+
+      const update = await this.couponService.updateAvialbility(payment.coupon, {
+        isAvailable: false
+      })
+      console.log(update)
 
       const updatedPayment = await this.baseModel.findByIdAndUpdate(
         payment.id,
@@ -119,12 +125,31 @@ export class PaymentService {
     }
   }
 
+  async getPaymentByRzOrderId(rzorderId: string) {
+    const payment = await this.baseModel.findOne({
+      'data.order.id': rzorderId,
+    });
+    console.log('order', payment);
+    return payment;
+  }
+
   async getAllPaymentsByUser(userId) {
-    return await this.baseModel.find({ user: userId }).populate('coupon user');
+    return await this.baseModel
+      .find({ user: userId })
+      .populate('coupon user payee');
+  }
+
+  async getAllPaymentsByOwner(ownerId) {
+    const payment = await this.baseModel
+      .find({ payee: ownerId })
+      .populate('coupon user payee');
+    return payment;
   }
 
   async getPaymentDetailById(paymentId: string) {
-    return await this.baseModel.findById(paymentId).populate('coupon user');
+    return await this.baseModel
+      .findById(paymentId)
+      .populate('coupon user payee');
   }
 
   async getRzPaymentDetailById(paymentId: string) {

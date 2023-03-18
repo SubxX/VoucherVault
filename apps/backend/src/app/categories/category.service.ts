@@ -18,7 +18,8 @@ export class CategoryService {
   async update(id: string, updateCategory) {
     const updatedCategory = await this.baseModel.findByIdAndUpdate(
       id,
-      updateCategory
+      updateCategory,
+      { new: true }
     );
     return updatedCategory;
   }

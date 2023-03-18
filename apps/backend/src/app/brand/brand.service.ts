@@ -18,7 +18,10 @@ export class BrandService {
   async update(id: string, updateBrand) {
     const updatedBrand = await this.baseModel.findByIdAndUpdate(
       id,
-      updateBrand
+      updateBrand,
+      {
+        new: true,
+      }
     );
     return updatedBrand;
   }
@@ -30,6 +33,7 @@ export class BrandService {
 
   async findById(id: string) {
     const brand = await this.baseModel.findById(id);
+    console.log('brand', brand);
     return brand;
   }
 

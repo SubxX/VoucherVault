@@ -44,6 +44,9 @@ export class User {
   @Prop({ nullable: true })
   role: string;
 
+  @Prop({ type: Object, nullable: true })
+  adDetails?: any;
+
   @Prop({
     type: Object,
   })

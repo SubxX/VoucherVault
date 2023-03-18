@@ -20,13 +20,14 @@ const SignUpTab = () => {
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit } = useForm<ISignUp>({
     defaultValues: {
-      name: '',
+      first_name: '',
+      last_name: '',
       email: '',
       password: '',
     },
   });
 
-  const submit = async ({ name, email, password }: ISignUp) => {
+  const submit = async ({ email, password, ...data }: ISignUp) => {
     try {
       const { error } = await supabase.auth.signUp(
         {
@@ -34,7 +35,7 @@ const SignUpTab = () => {
           password,
         },
         {
-          data: { name },
+          data,
         }
       );
       if (error) throw new Error(error?.message);
@@ -50,23 +51,48 @@ const SignUpTab = () => {
         <ModalBody py={0} pt={4}>
           <Controller
             control={control}
-            name="name"
+            name="first_name"
             rules={{
               required: 'Required',
             }}
             render={({ field: { value, onChange }, formState: { errors } }) => (
-              <FormControl isInvalid={Boolean(errors?.name?.message)}>
-                <FormLabel>Name</FormLabel>
+              <FormControl isInvalid={Boolean(errors?.first_name?.message)}>
+                <FormLabel>First Name</FormLabel>
                 <InputGroup>
                   <Input placeholder="Name" value={value} onChange={onChange} />
                   <InputLeftElement>
                     <AiOutlineUser />
                   </InputLeftElement>{' '}
                 </InputGroup>
-                <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors?.first_name?.message}
+                </FormErrorMessage>
               </FormControl>
             )}
           />
+
+          <Controller
+            control={control}
+            name="last_name"
+            rules={{
+              required: 'Required',
+            }}
+            render={({ field: { value, onChange }, formState: { errors } }) => (
+              <FormControl isInvalid={Boolean(errors?.last_name?.message)}>
+                <FormLabel>Last Name</FormLabel>
+                <InputGroup>
+                  <Input placeholder="Name" value={value} onChange={onChange} />
+                  <InputLeftElement>
+                    <AiOutlineUser />
+                  </InputLeftElement>
+                </InputGroup>
+                <FormErrorMessage>
+                  {errors?.last_name?.message}
+                </FormErrorMessage>
+              </FormControl>
+            )}
+          />
+
           <Controller
             control={control}
             name="email"

@@ -20,10 +20,6 @@ export class CreateCouponDto {
   @MinDate(new Date())
   validUpto?: Date;
 
-  @ApiProperty()
-  @IsNumber()
-  expiresIn?: number;
-
   @ApiProperty({ type: String, enum: ['PERCENT', 'AMOUNT'] })
   @IsString()
   type: string;
@@ -41,13 +37,13 @@ export class CreateCouponDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  commisionPercent?: number;
+  title?: number;
 
   @ApiProperty()
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  commissionAmount?: number;
+  bidAmount?: number;
 
   @ApiProperty()
   @IsBoolean()
@@ -78,4 +74,6 @@ export class CreateCouponDto {
   @ApiProperty()
   @IsOptional()
   media?: any;
+
+  isAvailable?;
 }

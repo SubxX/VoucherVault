@@ -31,22 +31,8 @@ export class CouponService {
   async create(createCouponDto: CreateCouponDto) {
     await this.couponAlreadyExist(createCouponDto.code);
 
-    if (createCouponDto.validUpto) {
-      const a = moment(new Date(createCouponDto.validUpto));
-      const b = moment(new Date());
-      createCouponDto.expiresIn = a.diff(b, 'days');
-    }
-
-    const brand: any = await this.brandService.findOne({
-      name: createCouponDto.brand.toLowerCase(),
-    });
+    const brand: any = await this.brandService.findById(createCouponDto?.brand);
     createCouponDto.brand = brand;
-
-    if (createCouponDto.validUpto) {
-      const a = moment(new Date(createCouponDto.validUpto));
-      const b = moment(new Date());
-      createCouponDto.expiresIn = a.diff(b, 'days');
-    }
 
     let categories;
     if (createCouponDto.categories) {
@@ -57,16 +43,30 @@ export class CouponService {
     console.log('createCouponDto', createCouponDto);
     const createdCoupon = await this.baseModel.create(createCouponDto);
 
+    if (createCouponDto.categories) {
+      for (const category of categories) {
+        await this.categoryModel.findByIdAndUpdate(
+          category._id,
+          { $push: { coupons: createdCoupon } },
+          { new: true }
+        );
+      }
+    }
+
     if (createCouponDto?.brand) {
-      await this.brandModel.findByIdAndUpdate(brand._id, {
-        $push: { coupons: createdCoupon },
-      });
+      await this.brandModel.findByIdAndUpdate(
+        brand._id,
+        { $push: { coupons: createdCoupon } },
+        { new: true }
+      );
     }
 
     if (createCouponDto.createdBy)
-      await this.userModel.findByIdAndUpdate(createCouponDto.createdBy, {
-        $push: { coupons: createdCoupon },
-      });
+      await this.userModel.findByIdAndUpdate(
+        createCouponDto.createdBy,
+        { $push: { coupons: createdCoupon } },
+        { new: true }
+      );
 
     const user = await this.userModel.findById(createCouponDto.createdBy);
     const templatebody: TriggerNotificationBody = {
@@ -88,10 +88,7 @@ export class CouponService {
   async getCategoryDetails(categories) {
     const categoriesDet = [];
     for (const category of categories) {
-      const categoryExists = await this.categoryService.findOne({
-        name: category.toLowerCase(),
-      });
-
+      const categoryExists = await this.categoryService.findById(category);
       categoriesDet.push(categoryExists._id);
     }
     return categoriesDet;
@@ -101,28 +98,38 @@ export class CouponService {
     const couponExists = await this.findOne({
       code: couponCode,
     });
-    if (couponExists)
+    return couponExists;
+  }
+
+  async update(id, update) {
+    const couponExists = await this.findOneWitCode({ code: update?.code });
+    if (couponExists?.code !== update?.code && couponExists)
       throw new HttpException(
         'Coupon Code Already Exists',
         HttpStatus.BAD_REQUEST
       );
-  }
-
-  async update(id, update) {
-    await this.couponAlreadyExist(update.code);
 
     let brand;
     if (update.brand) {
-      brand = await this.brandService.findOne({
-        name: update.brand.toLowerCase(),
-      });
+      brand = await this.brandService.findById(update.brand);
     }
-    update.brand = brand._id;
+    update.brand = brand?._id;
 
     //update categories
+    let categories;
+    if (update.categories) {
+      categories = await this.getCategoryDetails(update.categories);
+      update.categories = categories;
+    }
 
     const coupon = await this.findById(id);
-    await this.baseModel.findByIdAndUpdate(coupon._id, update);
+    await this.baseModel.findByIdAndUpdate(coupon._id, update, { new: true });
+
+    return await this.findById(id);
+  }
+
+  async updateAvialbility(id, update) {
+    await this.baseModel.findByIdAndUpdate(id, update);
 
     return await this.findById(id);
   }
@@ -185,19 +192,21 @@ export class CouponService {
     } else {
       if (query?.category) {
         categories = await this.categoryModel.find(
-          { name: { $in: query.category } },
+          { _id: { $in: query.category } },
           { id: true }
         );
       }
       if (query?.brand) {
         brands = await this.brandModel.find(
-          { name: { $in: query.brand } },
+          { _id: { $in: query.brand } },
           { id: true }
         );
       }
 
       options = {
-        ...(query.categories && { categories: { $in: categories } }),
+        isAvailable: true,
+        validUpto: { $gte: new Date() },
+        ...(query.category && { categories: { $in: categories } }),
         ...(query.brand && { brand: { $in: brands } }),
         ...(query.title && { title: new RegExp(query.title.toString(), 'i') }),
         ...(query.description && {
@@ -216,9 +225,27 @@ export class CouponService {
     return coupon;
   }
 
+  async findMyCoupons(query?) {
+    const sort = query.sort || '-createdAt';
+    const coupon = await this.baseModel
+      .find(query)
+      .select('+code')
+      .populate('createdBy brand categories medias')
+      .sort(sort);
+    return coupon;
+  }
+
   async findOne(query?) {
     const coupon = await await this.baseModel
       .findOne(query)
+      .populate('createdBy brand categories medias');
+    return coupon;
+  }
+
+  async findOneWitCode(query?) {
+    const coupon = await await this.baseModel
+      .findOne(query)
+      .select('+code')
       .populate('createdBy brand categories medias');
     return coupon;
   }

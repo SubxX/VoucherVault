@@ -48,12 +48,25 @@ export class CouponController {
     return await this.baseService.update(id, body);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(SupabaseAuthGuard)
+  // @ApiBearerAuth()
+  // @UseGuards(SupabaseAuthGuard)
   @ApiOkResponse({ type: [CouponDto] })
   @Get()
   findAll(@Query() query: FindCouponQuery): Promise<Coupon[]> {
     return this.baseService.find(query);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(SupabaseAuthGuard)
+  @ApiOkResponse({ type: [CouponDto] })
+  @Get('/my-coupons')
+  findAllByUser(
+    @Req() req,
+    @Query() query: FindCouponQuery
+  ): Promise<Coupon[]> {
+    console.log(req.createdBy);
+    query.createdBy = req.user._id;
+    return this.baseService.findMyCoupons(query);
   }
 
   @ApiBearerAuth()
