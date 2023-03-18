@@ -291,6 +291,6 @@ export class PaymentAccountService {
   }
 
   async updatePaymentAccount(id, body) {
-    await this.baseModel.findByIdAndUpdate(id, body);
+    await this.baseModel.findByIdAndUpdate(id, body, { new: true });
   }
 }
