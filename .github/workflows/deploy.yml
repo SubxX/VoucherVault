@@ -1,11 +1,9 @@
 name: Deploy
 on:
-  workflow_run:
-    workflows: ['Release']
-    types: [requested]
+  workflow_dispatch:
+  push:
     branches:
       - 'frontend-deployment'
-  workflow_dispatch:
 
 env:
   VITE_BASE_URL: ${{vars.BASE_URL}}
