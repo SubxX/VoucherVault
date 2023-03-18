@@ -45,22 +45,28 @@ export class CouponService {
 
     if (createCouponDto.categories) {
       for (const category of categories) {
-        await this.categoryModel.findByIdAndUpdate(category._id, {
-          $push: { coupons: createdCoupon },
-        });
+        await this.categoryModel.findByIdAndUpdate(
+          category._id,
+          { $push: { coupons: createdCoupon } },
+          { new: true }
+        );
       }
     }
 
     if (createCouponDto?.brand) {
-      await this.brandModel.findByIdAndUpdate(brand._id, {
-        $push: { coupons: createdCoupon },
-      });
+      await this.brandModel.findByIdAndUpdate(
+        brand._id,
+        { $push: { coupons: createdCoupon } },
+        { new: true }
+      );
     }
 
     if (createCouponDto.createdBy)
-      await this.userModel.findByIdAndUpdate(createCouponDto.createdBy, {
-        $push: { coupons: createdCoupon },
-      });
+      await this.userModel.findByIdAndUpdate(
+        createCouponDto.createdBy,
+        { $push: { coupons: createdCoupon } },
+        { new: true }
+      );
 
     const user = await this.userModel.findById(createCouponDto.createdBy);
     const templatebody: TriggerNotificationBody = {
@@ -117,7 +123,7 @@ export class CouponService {
     }
 
     const coupon = await this.findById(id);
-    await this.baseModel.findByIdAndUpdate(coupon._id, update);
+    await this.baseModel.findByIdAndUpdate(coupon._id, update, { new: true });
 
     return await this.findById(id);
   }

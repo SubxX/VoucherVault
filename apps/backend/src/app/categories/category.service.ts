@@ -8,7 +8,7 @@ import { CreateCategoryReq } from './dto/categories.dto';
 export class CategoryService {
   constructor(
     @InjectModel('Category') private readonly baseModel: Model<CategoryDocument>
-  ) { }
+  ) {}
 
   async create(body?: CreateCategoryReq) {
     const createdCategory = await this.baseModel.create(body);
@@ -18,7 +18,8 @@ export class CategoryService {
   async update(id: string, updateCategory) {
     const updatedCategory = await this.baseModel.findByIdAndUpdate(
       id,
-      updateCategory
+      updateCategory,
+      { new: true }
     );
     return updatedCategory;
   }
