@@ -15,7 +15,7 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { useRazorpayOnboardingMutation } from '@dashboard/store/api/payment.query';
 import { useAppDispatch, useAppSelector } from '@dashboard/store/store';
-import { closeDialog } from '@dashboard/store/features/onboarding/onboarding.slice';
+import { closeOnboardingDialog } from '@dashboard/store/features/onboarding/onboarding.slice';
 
 const Form = ({ onClose }: any) => {
   const [onboard, { isLoading }] = useRazorpayOnboardingMutation();
@@ -212,7 +212,7 @@ const Form = ({ onClose }: any) => {
 const LinkBankAccount = () => {
   const dispatch = useAppDispatch();
   const { dialog: isOpen } = useAppSelector((state) => state.onboarding);
-  const onClose = () => dispatch(closeDialog());
+  const onClose = () => dispatch(closeOnboardingDialog());
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

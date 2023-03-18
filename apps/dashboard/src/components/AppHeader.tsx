@@ -21,18 +21,18 @@ const AppHeader = () => {
           <Link to="/">
             <AppLogo />
           </Link>
-          {isTab && (
+          {/* {isTab && (
             <Box maxWidth="400px" width="full">
               <AppSearchbar />
             </Box>
-          )}
+          )} */}
 
           <Flex gap={2} alignItems="center">
             <DarkModeToggler />
             <Auth />
           </Flex>
         </Flex>
-        {!isTab && <AppSearchbar />}
+        {/* {!isTab && <AppSearchbar />} */}
       </Container>
     </Box>
   );

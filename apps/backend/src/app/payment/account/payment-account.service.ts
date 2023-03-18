@@ -29,7 +29,6 @@ export class PaymentAccountService {
           legal_business_name: body?.legalBusinessName,
           business_type: 'individual', //partnership
           contact_name:
-            (req.user.firstName || null) + ' ' + (req.user.lastName || null) ||
             body.contactName,
           profile: {
             category: body?.category || 'ecommerce',

@@ -9,6 +9,10 @@ import {
   TabPanel,
   InputGroup,
   InputLeftElement,
+  Alert,
+  AlertIcon,
+  CloseButton,
+  Text,
 } from '@chakra-ui/react';
 import { supabase } from '@dashboard/utils/supabase.utils';
 import { Controller, useForm } from 'react-hook-form';
@@ -18,6 +22,8 @@ import { useState } from 'react';
 
 const SignUpTab = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<any>();
+
   const { control, handleSubmit } = useForm<ISignUp>({
     defaultValues: {
       first_name: '',
@@ -40,7 +46,7 @@ const SignUpTab = () => {
       );
       if (error) throw new Error(error?.message);
     } catch (error) {
-      console.log(error);
+      setError(error);
     } finally {
       setLoading(false);
     }
@@ -49,6 +55,17 @@ const SignUpTab = () => {
     <form onSubmit={handleSubmit(submit)}>
       <TabPanel p={0}>
         <ModalBody py={0} pt={4}>
+          {Boolean(error) && (
+            <Alert status="error" mb={2}>
+              <AlertIcon />
+              <Text flex={1}>{error?.message}</Text>
+              <CloseButton
+                onClick={() => setError(null)}
+                aria-label="Close error message"
+              />
+            </Alert>
+          )}
+
           <Controller
             control={control}
             name="first_name"

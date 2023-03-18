@@ -13,10 +13,10 @@ const onboardingSlice = createSlice({
   name: 'couponHandler',
   initialState,
   reducers: {
-    openDialog: (state) => {
+    openOnboardingDialog: (state) => {
       state.dialog = true;
     },
-    closeDialog: (state) => {
+    closeOnboardingDialog: (state) => {
       if (!state.formLoading) state.dialog = false
     },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
@@ -38,8 +38,12 @@ const onboardingSlice = createSlice({
       state.onboardingLoading = false
       state.error = payload
     })
+
+    builder.addMatcher(paymentsApi.endpoints.razorpayOnboarding.matchFulfilled, (state) => {
+      state.dialog = false
+    })
   }
 })
 
-export const { closeDialog, openDialog, setLoading } = onboardingSlice.actions
+export const { closeOnboardingDialog, openOnboardingDialog, setLoading } = onboardingSlice.actions
 export default onboardingSlice.reducer

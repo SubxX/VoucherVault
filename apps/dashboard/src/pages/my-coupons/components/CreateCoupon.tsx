@@ -36,7 +36,7 @@ import {
 } from '@dashboard/store/features/coupon/coupon-handler.slice';
 import { useEffect } from 'react';
 import dayjs from 'dayjs';
-import { openDialog as openOnboardingDialog } from '@dashboard/store/features/onboarding/onboarding.slice';
+import { openOnboardingDialog } from '@dashboard/store/features/onboarding/onboarding.slice';
 
 type SelectProp = {
   value: string;
