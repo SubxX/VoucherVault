@@ -8,6 +8,9 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { paymentGatewayCreds } from '@backend/common/payment-gateway.config';
 import { CouponService } from '@backend/app/coupon/coupon.service';
+import { User, UserDocument } from '@backend/app/user/user.schema';
+import { TriggerNotificationBody } from '@backend/app/notification/notification.dto';
+import { NotificationService } from '@backend/app/notification/notification.service';
 
 @Injectable()
 export class PaymentService {
@@ -20,8 +23,11 @@ export class PaymentService {
     @InjectRazorpay() private readonly razorpayClient: Razorpay,
     @InjectModel(PaymentIntent.name)
     private baseModel: Model<PaymentIntentDocument>,
-    private couponService: CouponService
-  ) { }
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>,
+    private couponService: CouponService,
+    private notificationService: NotificationService
+  ) {}
 
   async paymentVerification(body: VerifyPaymentReq) {
     const generatedSignature = crypto
@@ -46,10 +52,14 @@ export class PaymentService {
     ) {
       console.log('payment verified', payment);
 
-      const update = await this.couponService.updateAvialbility(payment.coupon, {
-        isAvailable: false
-      })
-      console.log(update)
+      const updateCoupon = await this.couponService.updateAvialbility(
+        payment.coupon,
+        {
+          isAvailable: false,
+        }
+      );
+      const coupon = await this.couponService.revealCouponCode(payment.coupon);
+      console.log('Update coupon availability', updateCoupon);
 
       const updatedPayment = await this.baseModel.findByIdAndUpdate(
         payment.id,
@@ -64,6 +74,21 @@ export class PaymentService {
         },
         { new: true }
       );
+
+      const user = await this.userModel.findById(updateCoupon.createdBy);
+      const templatebody: TriggerNotificationBody = {
+        templateName: 'coupon-payment-successful',
+        subscriberId: user.email,
+        email: user.email,
+        payload: {
+          couponCode: coupon.code,
+          couponCommission: +payment.amount / 100,
+          currency: updateCoupon.currency,
+        },
+      };
+
+      console.log('templateBody', templatebody);
+      await this.notificationService.trigger(templatebody);
 
       // const coupon = await this.couponModel
       //   .findById(payment.coupon)

@@ -81,6 +81,7 @@ export class CouponService {
       },
     };
 
+    console.log('templateBody', templatebody);
     await this.notificationService.trigger(templatebody);
     return createdCoupon;
   }

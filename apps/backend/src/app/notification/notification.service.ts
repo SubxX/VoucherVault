@@ -11,13 +11,18 @@ const novu = new Novu(novuConfig.apiKey);
 @Injectable()
 export class NotificationService {
   async trigger(body: TriggerNotificationBody) {
-    const res: any = await novu.trigger(body.templateName, {
-      to: {
-        subscriberId: body.subscriberId,
-      },
-      payload: body.payload,
-    });
-    return res;
+    try {
+      const res: any = await novu.trigger(body.templateName, {
+        to: {
+          subscriberId: body.subscriberId,
+        },
+        payload: body.payload,
+      });
+      console.log('novu res', res.data);
+      return res;
+    } catch (err) {
+      console.log('novu errr', err);
+    }
   }
 
   async createSubscriber(user: UserDocument) {
