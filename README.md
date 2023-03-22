@@ -11,7 +11,6 @@ Frontend should be avaiable on the following url - http://localhost:3000
 Backend should be available on the following url - http://localhost:2000
 
 Technologies:
-
 </br>&emsp; Frontend: React, Redux </br>
 &emsp; Backend: Nestjs </br>
 &emsp; Database: MongoDB </br>
