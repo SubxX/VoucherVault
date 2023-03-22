@@ -11,18 +11,11 @@ Frontend should be avaiable on the following url - http://localhost:3000
 Backend should be available on the following url - http://localhost:2000
 
 Technologies:
-  Frontend: React, Redux
-  
-  Backend: Nestjs
-  
-  Database: MongoDB
-  
-  Authentication and OAuth: Supabase and Google Console
-  
-  Payment: Razorpay and Razorpay Route(Payout)
-  
-  Notification: Novu Notification
-  
-  Media: Cloudinary
-  
-  Aadhar Verification: gridline.io
+Frontend: React, Redux </br>
+Backend: Nestjs </br>
+  Database: MongoDB </br>
+  Authentication and OAuth: Supabase and Google Console </br>
+  Payment: Razorpay and Razorpay Route(Payout) </br>
+  Notification: Novu Notification </br>
+  Media: Cloudinary </br>
+  Aadhar Verification: gridline.io </br>
